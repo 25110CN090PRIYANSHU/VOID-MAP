@@ -1,0 +1,711 @@
+/* =========================
+   RESET
+========================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+    background: #111;
+}
+
+
+/* =========================
+   NAVBAR
+========================= */
+
+.navbar {
+    height: 70px;
+
+    background: #111;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 25px;
+
+    gap: 25px;
+
+    position: relative;
+
+    z-index: 1000;
+
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.4);
+}
+
+
+/* =========================
+   VOID LOGO
+========================= */
+
+.logo {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    color: white;
+
+    font-size: 24px;
+
+    font-weight: bold;
+
+    letter-spacing: 4px;
+
+    white-space: nowrap;
+}
+
+.logo-circle {
+    width: 34px;
+    height: 34px;
+
+    border: 1px solid white;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: white;
+
+    font-size: 21px;
+
+    font-weight: bold;
+
+    letter-spacing: 0;
+}
+
+
+/* =========================
+   SEARCH
+========================= */
+
+.search-container {
+    position: relative;
+
+    width: 450px;
+
+    max-width: 50%;
+}
+
+.search-box {
+    display: flex;
+
+    width: 100%;
+
+    height: 46px;
+
+    background: white;
+
+    border-radius: 25px;
+
+    overflow: hidden;
+}
+
+.search-box input {
+    flex: 1;
+
+    border: none;
+
+    outline: none;
+
+    padding: 0 18px;
+
+    font-size: 16px;
+}
+
+.search-btn {
+    width: 55px;
+
+    border: none;
+
+    background: #222;
+
+    color: white;
+
+    cursor: pointer;
+
+    font-size: 17px;
+}
+
+.search-btn:hover {
+    background: #333;
+}
+
+.clear-btn {
+    width: 40px;
+
+    border: none;
+
+    background: white;
+
+    color: #777;
+
+    font-size: 25px;
+
+    cursor: pointer;
+
+    display: none;
+}
+
+
+/* =========================
+   SUGGESTIONS
+========================= */
+
+.suggestions {
+    position: absolute;
+
+    top: 52px;
+
+    left: 0;
+
+    width: 100%;
+
+    background: white;
+
+    border-radius: 12px;
+
+    overflow: hidden;
+
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25);
+
+    display: none;
+}
+
+.suggestion {
+    padding: 14px 18px;
+
+    cursor: pointer;
+
+    border-bottom: 1px solid #eee;
+
+    display: flex;
+
+    gap: 12px;
+
+    align-items: center;
+}
+
+.suggestion:hover {
+    background: #f2f2f2;
+}
+
+.suggestion-icon {
+    font-size: 18px;
+}
+
+.suggestion-text {
+    font-size: 14px;
+
+    color: #333;
+}
+
+
+/* =========================
+   LOCATION BUTTON
+========================= */
+
+.location-btn {
+    margin-left: auto;
+
+    padding: 12px 18px;
+
+    border: none;
+
+    border-radius: 22px;
+
+    background: white;
+
+    color: #111;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+.location-btn:hover {
+    background: #ddd;
+}
+
+
+/* =========================
+   MAP
+========================= */
+
+#map {
+    width: 100%;
+
+    height: calc(100vh - 70px);
+}
+
+
+/* =========================
+   MAP CONTROLS
+========================= */
+
+.map-controls {
+    position: absolute;
+
+    right: 20px;
+
+    bottom: 30px;
+
+    z-index: 900;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+.map-controls button {
+    width: 45px;
+
+    height: 45px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: white;
+
+    color: #222;
+
+    font-size: 22px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+}
+
+.map-controls button:hover {
+    background: #eee;
+}
+
+
+/* =========================
+   PLACE CARD
+========================= */
+
+.place-card {
+    position: absolute;
+
+    left: 25px;
+
+    bottom: 30px;
+
+    width: 330px;
+
+    background: white;
+
+    padding: 22px;
+
+    border-radius: 16px;
+
+    z-index: 900;
+
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+
+    display: none;
+}
+
+.place-icon {
+    font-size: 30px;
+
+    margin-bottom: 8px;
+}
+
+.place-card h2 {
+    font-size: 21px;
+
+    margin-bottom: 8px;
+
+    color: #111;
+}
+
+.place-card p {
+    color: #666;
+
+    line-height: 1.5;
+
+    font-size: 14px;
+}
+
+.close-card {
+    position: absolute;
+
+    right: 12px;
+
+    top: 10px;
+
+    border: none;
+
+    background: none;
+
+    font-size: 25px;
+
+    cursor: pointer;
+
+    color: #555;
+}
+
+
+/* =========================
+   PLACE ACTIONS
+========================= */
+
+.place-actions {
+    display: flex;
+
+    gap: 10px;
+
+    margin-top: 18px;
+}
+
+.place-actions button {
+    flex: 1;
+
+    padding: 10px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    background: #111;
+
+    color: white;
+
+    font-weight: bold;
+}
+
+.place-actions button:hover {
+    background: #333;
+}
+
+
+/* =========================
+   DIRECTIONS CARD
+========================= */
+
+.directions-card {
+    position: absolute;
+
+    left: 25px;
+
+    bottom: 30px;
+
+    width: 350px;
+
+    background: white;
+
+    padding: 22px;
+
+    border-radius: 16px;
+
+    z-index: 950;
+
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+
+    display: none;
+}
+
+.directions-title {
+    font-size: 21px;
+
+    font-weight: bold;
+
+    margin-bottom: 20px;
+
+    color: #111;
+}
+
+.route-info {
+    display: flex;
+
+    gap: 15px;
+}
+
+.route-item {
+    flex: 1;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+}
+
+.route-icon {
+    font-size: 22px;
+}
+
+.route-item small {
+    display: block;
+
+    color: #777;
+
+    font-size: 11px;
+}
+
+.route-item strong {
+    display: block;
+
+    color: #111;
+
+    margin-top: 3px;
+
+    font-size: 15px;
+}
+
+.route-status {
+    margin-top: 18px;
+
+    padding-top: 15px;
+
+    border-top: 1px solid #eee;
+
+    color: #666;
+
+    font-size: 13px;
+}
+
+
+/* =========================
+   LOCATION DOT
+========================= */
+
+.my-location-dot {
+    width: 20px;
+
+    height: 20px;
+
+    background: #4285f4;
+
+    border: 3px solid white;
+
+    border-radius: 50%;
+
+    box-shadow:
+        0 0 0 6px rgba(66, 133, 244, 0.25);
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 700px) {
+
+    .navbar {
+        height: auto;
+
+        padding: 12px;
+
+        flex-wrap: wrap;
+
+        gap: 12px;
+    }
+
+    .logo {
+        width: 100%;
+    }
+
+    .search-container {
+        width: 100%;
+
+        max-width: none;
+    }
+
+    .location-btn {
+        margin-left: 0;
+
+        width: 100%;
+    }
+
+    #map {
+        height: calc(100vh - 145px);
+    }
+
+    .place-card,
+    .directions-card {
+        left: 10px;
+
+        bottom: 15px;
+
+        width: calc(100% - 20px);
+    }
+
+    .map-controls {
+        right: 10px;
+
+        bottom: 180px;
+    }
+}
+
+/* =========================
+   TRANSPORT MODES
+========================= */
+
+.transport-modes {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.transport-btn {
+    flex: 1;
+
+    padding: 12px 8px;
+
+    border: 1px solid #ddd;
+
+    border-radius: 10px;
+
+    background: #f7f7f7;
+
+    color: #333;
+
+    cursor: pointer;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 5px;
+
+    font-size: 18px;
+
+    transition: 0.2s;
+}
+
+.transport-btn span {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.transport-btn:hover {
+    background: #eee;
+}
+
+.transport-btn.active {
+    background: #111;
+    color: white;
+    border-color: #111;
+}
+
+
+/* ==================== DARK MODE ==================== */
+
+body.dark-mode {
+    background: #111827;
+    color: #ffffff;
+}
+
+/* Navbar */
+body.dark-mode .navbar {
+    background: #111827;
+    color: #ffffff;
+}
+
+/* Search */
+body.dark-mode .search-container {
+    background: #1f2937;
+}
+
+body.dark-mode #searchInput {
+    background: #1f2937;
+    color: #ffffff;
+}
+
+body.dark-mode #searchInput::placeholder {
+    color: #9ca3af;
+}
+
+/* Search suggestions */
+body.dark-mode .suggestions {
+    background: #1f2937;
+    color: #ffffff;
+}
+
+body.dark-mode .suggestion-item {
+    color: #ffffff;
+}
+
+body.dark-mode .suggestion-item:hover {
+    background: #374151;
+}
+
+/* Location button */
+body.dark-mode .location-btn {
+    background: #1f2937;
+    color: #ffffff;
+}
+
+/* Place card */
+body.dark-mode .place-card {
+    background: #1f2937;
+    color: #ffffff;
+}
+
+body.dark-mode .place-card h2,
+body.dark-mode .place-card p {
+    color: #ffffff;
+}
+
+/* Directions card */
+body.dark-mode .directions-card {
+    background: #1f2937;
+    color: #ffffff;
+}
+
+body.dark-mode .directions-card h2,
+body.dark-mode .directions-card p,
+body.dark-mode .directions-card strong,
+body.dark-mode .directions-card small {
+    color: #ffffff;
+}
+
+/* Transport buttons */
+body.dark-mode .transport-btn {
+    background: #374151;
+    color: #ffffff;
+}
+
+body.dark-mode .transport-btn:hover {
+    background: #4b5563;
+}
+
+/* Map controls */
+body.dark-mode .map-controls button {
+    background: #1f2937;
+    color: #ffffff;
+}
+
+/* General buttons */
+body.dark-mode button {
+    color: #ffffff;
+}
+
+/* Leaflet popup */
+body.dark-mode .leaflet-popup-content-wrapper,
+body.dark-mode .leaflet-popup-tip {
+    background: #1f2937;
+    color: #ffffff;
+}
+
+body.dark-mode .leaflet-popup-content {
+    color: #ffffff;
+}

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>VOID - Explore the World</title>
+
+    <!-- Leaflet CSS -->
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    >
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Leaflet JS -->
+    <script
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        defer>
+    </script>
+
+    <script src="script.js" defer></script>
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+
+    <header class="navbar">
+
+        <div class="logo">
+            <span class="logo-circle">V</span>
+            <span>VOID</span>
+        </div>
+
+        <div class="search-container">
+
+            <div class="search-box">
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search places..."
+                    autocomplete="off"
+                >
+
+                <button id="clearBtn" class="clear-btn">
+                    ×
+                </button>
+
+                <button id="searchBtn" class="search-btn">
+                    🔍
+                </button>
+
+            </div>
+
+            <div id="suggestions" class="suggestions"></div>
+
+        </div>
+
+        <button id="locationBtn" class="location-btn">
+            📍 <span>My Location</span>
+        </button>
+
+    </header>
+
+
+    <!-- ================= MAP ================= -->
+
+    <main>
+
+        <div id="map"></div>
+
+
+        <!-- MAP CONTROLS -->
+
+        <div class="map-controls">
+
+            <button id="zoomIn" title="Zoom In">
+                +
+            </button>
+
+            <button id="zoomOut" title="Zoom Out">
+                −
+            </button>
+
+            <button id="darkModeBtn" title="Dark Mode">
+                🌙
+            </button>
+
+            <button id="satelliteBtn" title="Satellite">
+                🛰️
+            </button>
+
+        </div>
+
+
+        <!-- ================= PLACE CARD ================= -->
+
+        <div id="placeCard" class="place-card">
+
+            <button id="closeCard" class="close-card">
+                ×
+            </button>
+
+            <div class="place-icon">
+                📍
+            </div>
+
+            <h2 id="placeName">
+                Location
+            </h2>
+
+            <p id="placeAddress">
+                Search for a place to see details.
+            </p>
+
+            <div class="place-actions">
+
+                <button id="savePlaceBtn">
+                    ⭐ Save
+                </button>
+
+                <button id="directionsBtn">
+                    🧭 Directions
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= DIRECTIONS CARD ================= -->
+
+        <div id="directionsCard" class="directions-card">
+
+    <button id="closeDirections" class="close-card">
+        ×
+    </button>
+
+    <h2>🧭 Directions</h2>
+
+    <!-- Transport Modes -->
+    <div class="transport-modes">
+
+        <button class="transport-btn active" data-mode="driving">
+            🚗
+            <span>Drive</span>
+        </button>
+
+        <button class="transport-btn" data-mode="walking">
+            🚶
+            <span>Walk</span>
+        </button>
+
+        <button class="transport-btn" data-mode="cycling">
+            🚲
+            <span>Cycle</span>
+        </button>
+
+    </div>
+
+    <!-- Route Information -->
+    <div class="route-info">
+
+        <div class="route-item">
+            <span>📏</span>
+
+            <div>
+                <small>Distance</small>
+                <strong id="routeDistance">
+                    Calculating...
+                </strong>
+            </div>
+        </div>
+
+        <div class="route-item">
+            <span>⏱️</span>
+
+            <div>
+                <small>Estimated time</small>
+                <strong id="routeTime">
+                    Calculating...
+                </strong>
+            </div>
+        </div>
+
+    </div>
+
+    <p id="routeStatus">
+        Calculating your route...
+    </p>
+
+</div>
