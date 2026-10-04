@@ -6,6 +6,8 @@
 <title>VOID Maps — Explore the World</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#111111">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
 <script src="script.js" defer></script>
 </head>
@@ -21,7 +23,7 @@
     <div id="suggestions" class="suggestions"></div>
   </div>
   <button id="locationBtn" class="top-action">⌖ <span>My location</span></button>
-  <button id="exploreBtn" class="top-action">Explore</button>
+  <button id="voiceBtn" class="top-action">🎙️ <span>Voice</span></button><button id="exploreBtn" class="top-action">Explore</button>
 </header>
 
 <main id="mapShell">
@@ -39,7 +41,7 @@
     <button id="recenterBtn" title="Recenter">◎</button>
     <button id="darkModeBtn" title="Dark map">☾</button>
     <button id="satelliteBtn" title="Satellite">▧</button>
-    <button id="fullscreenBtn" title="Fullscreen">⛶</button>
+    <button id="fullscreenBtn" title="Fullscreen">⛶</button><button id="compassBtn" title="Compass">🧭</button>
   </div>
 
   <div id="categoryBar" class="category-bar">
@@ -99,6 +101,19 @@
   <section id="plannerPanel" class="panel bottom-panel hidden"><div class="panel-head"><h2>❤️ Date / Meet planner</h2><button data-close="plannerPanel">×</button></div><div class="planner-grid"><label>Meeting place<input id="planPlace" placeholder="Current selected place"></label><label>Date<input id="planDate" type="date"></label><label>Time<input id="planTime" type="time"></label></div><div class="place-actions"><button id="halfwayBtn">Meet halfway</button><button id="safeModeBtn">🛡️ Safe mode</button><button id="sharePlanBtn">Share plan</button></div><div id="planResult" class="mini-card"></div></section>
 
   <button id="plannerBtn" class="floating planner-fab">❤️ Plan</button>
+  <nav class="mobile-nav"><button data-mobile="explorePanel">🧭<span>Explore</span></button><button data-mobile="savedPanel">★<span>Saved</span></button><button id="mobileLocate">⌖<span>Location</span></button><button data-mobile="plannerPanel">❤️<span>Plan</span></button><button id="mobileMore">☰<span>More</span></button></nav>
+
+  <section id="morePanel" class="panel more-panel hidden"><div class="panel-head"><h2>VOID MAP Tools</h2><button data-close="morePanel">×</button></div><div class="tool-grid">
+    <button id="homeBtn">🏠<b>Home</b><small>Navigate home</small></button><button id="workBtn">💼<b>Work</b><small>Navigate to work</small></button>
+    <button id="parkingBtn">🅿️<b>Parking</b><small>Find parking</small></button><button id="fuelCostBtn">⛽<b>Fuel cost</b><small>Estimate trip cost</small></button>
+    <button id="tripBtn">🗺️<b>Trip planner</b><small>Multiple stops</small></button><button id="friendsBtn">👥<b>Friends</b><small>Local sharing demo</small></button>
+    <button id="safetyBtn">🛡️<b>Safety</b><small>SOS & trip timer</small></button><button id="offlineBtn">📥<b>Offline</b><small>Install app/cache UI</small></button>
+  </div><div id="moreStatus" class="mini-card">Tip: set Home and Work from the selected place menu.</div></section>
+
+  <section id="tripPanel" class="panel bottom-panel hidden"><div class="panel-head"><h2>🗺️ Multi-stop trip</h2><button data-close="tripPanel">×</button></div><div class="trip-add"><input id="tripStopInput" placeholder="Add a place or address"><button id="addTripStop">Add</button></div><div id="tripStops"></div><div class="place-actions"><button id="routeTripBtn">Route trip</button><button id="clearTripBtn">Clear</button></div></section>
+  <section id="safetyPanel" class="panel safety-panel hidden"><div class="panel-head"><h2>🛡️ Safety Center</h2><button data-close="safetyPanel">×</button></div><button id="sosBtn" class="sos-btn">SOS — EMERGENCY</button><div class="mini-card"><b>Trip safety timer</b><p class="muted">Start a timer and check in when you arrive.</p><div class="safety-row"><input id="safetyMinutes" type="number" min="1" value="30"><button id="startSafety">Start timer</button></div><b id="safetyCountdown"></b></div><div class="mini-card"><b>Emergency shortcuts</b><div class="place-actions"><button id="policeBtn">🚓 Police nearby</button><button id="hospitalBtn">🏥 Hospital nearby</button></div></div></section>
+  <section id="friendsPanel" class="panel side-panel hidden"><div class="panel-head"><h2>👥 Friends & Sharing</h2><button data-close="friendsPanel">×</button></div><p class="muted">Client-only demo: no account/backend is required. Share a temporary map link with a friend.</p><button id="shareLocationBtn" class="wide-btn">📍 Share my current location</button><div id="shareLocationResult" class="mini-card"></div></section>
+  <section id="offlinePanel" class="panel side-panel hidden"><div class="panel-head"><h2>📥 Offline / Install</h2><button data-close="offlinePanel">×</button></div><p class="muted">VOID MAP can be installed as a PWA when served over HTTPS. Map tiles and third-party API data still depend on their providers unless a dedicated offline tile package is added.</p><button id="installBtn" class="wide-btn">Install VOID MAP</button><div id="offlineStatus" class="mini-card">Checking service-worker support…</div></section>
   <div id="toast" class="toast"></div>
 </main>
 </body>

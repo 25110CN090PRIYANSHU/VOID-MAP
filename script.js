@@ -52,3 +52,46 @@ $('safeModeBtn').onclick=()=>{if(safeTimer){clearInterval(safeTimer);safeTimer=n
 (function loadHash(){const m=location.hash.match(/place=([^&]+)/);if(m){const [lat,lon]=decodeURIComponent(m[1]).split(',').map(Number);if(Number.isFinite(lat)&&Number.isFinite(lon)){selectPlace({name:'Shared location',display_name:`${lat.toFixed(5)}, ${lon.toFixed(5)}`,lat,lon},true)}}})();
 map.on('click',e=>{following=false});
 loadWeather();
+
+/* ================= VOID MAP 3.0 upgrades ================= */
+const vm3 = { trip: JSON.parse(localStorage.getItem('voidTripStops')||'[]'), safetyInterval:null, deferredInstall:null };
+const saveTrip=()=>localStorage.setItem('voidTripStops',JSON.stringify(vm3.trip));
+function openVMPanel(id){document.querySelectorAll('.panel').forEach(p=>{if(p.id!==id && p.id!=='placeCard' && p.id!=='directionsCard') p.classList.add('hidden')});$(id)?.classList.remove('hidden')}
+function setShortcut(key){if(!currentPlace){toast('Select a place first');return}localStorage.setItem('voidShortcut_'+key,JSON.stringify({name:currentPlace.name,display_name:currentPlace.display_name,lat:+currentPlace.lat,lon:+currentPlace.lon}));toast(`${key==='home'?'Home':'Work'} saved`)}
+function navigateTo(p){currentPlace=p;if(!userLocation){locate();toast('Allow location, then try again');return}calculateRoute()}
+$('homeBtn')?.addEventListener('click',()=>{const p=JSON.parse(localStorage.getItem('voidShortcut_home')||'null');p?navigateTo(p):setShortcut('home')});
+$('workBtn')?.addEventListener('click',()=>{const p=JSON.parse(localStorage.getItem('voidShortcut_work')||'null');p?navigateTo(p):setShortcut('work')});
+$('morePanel')?.querySelectorAll('button').forEach(b=>{if(b.dataset.close)b.onclick=()=>closePanel(b.dataset.close)});
+$('mobileMore')?.addEventListener('click',()=>openVMPanel('morePanel'));
+document.querySelectorAll('[data-mobile]').forEach(b=>b.addEventListener('click',()=>{openVMPanel(b.dataset.mobile);if(b.dataset.mobile==='savedPanel')renderSaved();}));
+$('mobileLocate')?.addEventListener('click',()=>{locate();following=true;if(userLocation)map.setView([userLocation.lat,userLocation.lon],17)});
+$('parkingBtn')?.addEventListener('click',()=>{closePanel('morePanel');nearby('parking')});
+$('fuelCostBtn')?.addEventListener('click',()=>{const km=+prompt('Trip distance in km',currentRoute?Math.round(currentRoute.distance/1000):10)||0;const mileage=+prompt('Vehicle mileage (km/l)',15)||15;const price=+prompt('Fuel price per litre (₹)',100)||100;const cost=km/mileage*price;toast(`Estimated fuel cost: ₹${Math.round(cost)}`)});
+$('tripBtn')?.addEventListener('click',()=>{closePanel('morePanel');openVMPanel('tripPanel');renderTrip()});
+$('friendsBtn')?.addEventListener('click',()=>{closePanel('morePanel');openVMPanel('friendsPanel')});
+$('safetyBtn')?.addEventListener('click',()=>{closePanel('morePanel');openVMPanel('safetyPanel')});
+$('offlineBtn')?.addEventListener('click',()=>{closePanel('morePanel');openVMPanel('offlinePanel')});
+$('compassBtn')?.addEventListener('click',()=>{document.getElementById('compassBtn').classList.toggle('compass-active');toast('Compass mode toggled')});
+
+async function addTripStop(){const q=$('tripStopInput')?.value.trim();if(!q)return;try{const r=await fetch(`https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=1&q=${encodeURIComponent(q)}`,{headers:{Accept:'application/json'}});const d=await r.json();if(!d.length)return toast('Stop not found');const p=d[0];vm3.trip.push({name:p.display_name.split(',')[0],display_name:p.display_name,lat:+p.lat,lon:+p.lon});saveTrip();$('tripStopInput').value='';renderTrip();}catch{toast('Trip search failed')}}
+function renderTrip(){const box=$('tripStops');if(!box)return;box.innerHTML=vm3.trip.length?vm3.trip.map((p,i)=>`<div class="trip-stop"><span>${i+1}.</span><div><b>${escapeHTML(p.name)}</b><small class="muted">${escapeHTML(p.display_name)}</small></div><button data-trip-remove="${i}">×</button></div>`).join(''):'<p class="muted">No stops added. Add destinations above.</p>';box.querySelectorAll('[data-trip-remove]').forEach(b=>b.onclick=()=>{vm3.trip.splice(+b.dataset.tripRemove,1);saveTrip();renderTrip()})}
+$('addTripStop')?.addEventListener('click',addTripStop);$('tripStopInput')?.addEventListener('keydown',e=>{if(e.key==='Enter')addTripStop()});
+$('clearTripBtn')?.addEventListener('click',()=>{vm3.trip=[];saveTrip();renderTrip()});
+$('routeTripBtn')?.addEventListener('click',async()=>{if(!userLocation||!vm3.trip.length)return toast('Set location and add at least one stop');const points=[userLocation,...vm3.trip];const coords=points.map(p=>`${p.lon},${p.lat}`).join(';');try{const r=await fetch(`https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson&steps=true`);const d=await r.json();if(d.code!=='Ok')throw 0;if(routeLayer)map.removeLayer(routeLayer);routeLayer=L.geoJSON(d.routes[0].geometry,{style:{color:'#111',weight:7,opacity:.85}}).addTo(map);currentRoute=d.routes[0];map.fitBounds(routeLayer.getBounds(),{padding:[60,60]});toast(`Trip ready • ${formatDistance(currentRoute.distance)} • ${formatDuration(currentRoute.duration)}`);closePanel('tripPanel')}catch{toast('Could not build trip route')}});
+
+$('shareLocationBtn')?.addEventListener('click',()=>{if(!userLocation){locate();return}const u=`${location.href.split('#')[0]}#place=${userLocation.lat},${userLocation.lon}`;const result=$('shareLocationResult');result.textContent='Location link ready. It shares only this point, not continuous live tracking.';if(navigator.share)navigator.share({title:'My VOID MAP location',url:u}).catch(()=>{});else navigator.clipboard?.writeText(u).then(()=>toast('Location link copied'))});
+
+function startSafety(){let sec=(+($('safetyMinutes')?.value)||30)*60;clearInterval(vm3.safetyInterval);$('safetyCountdown').textContent='';vm3.safetyInterval=setInterval(()=>{sec--;const m=Math.floor(sec/60),s=sec%60;$('safetyCountdown').textContent=`Check-in timer: ${m}:${String(s).padStart(2,'0')}`;if(sec<=0){clearInterval(vm3.safetyInterval);toast('⚠️ Safety timer ended — check in');}},1000);toast('Safety timer started')}
+$('startSafety')?.addEventListener('click',startSafety);$('sosBtn')?.addEventListener('click',()=>{const ok=confirm('SOS is a demo action. Open your phone emergency dialer?');if(ok)location.href='tel:112'});
+$('policeBtn')?.addEventListener('click',()=>nearby('police'));$('hospitalBtn')?.addEventListener('click',()=>nearby('hospital'));
+
+$('voiceBtn')?.addEventListener('click',()=>{const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return toast('Voice recognition is not supported in this browser');const r=new SR();r.lang='en-IN';r.interimResults=false;r.onstart=()=>toast('Listening…');r.onresult=e=>{const q=e.results[0][0].transcript;els.search.value=q;searchPlaces(q)};r.onerror=()=>toast('Voice search failed');r.start()});
+
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();vm3.deferredInstall=e;$('installBtn')?.addEventListener('click',async()=>{vm3.deferredInstall?.prompt();vm3.deferredInstall=null})});
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(()=>{$('offlineStatus').textContent='PWA cache is available. Install from this panel or your browser menu.'}).catch(()=>{$('offlineStatus').textContent='Service worker unavailable in this environment.'}))}
+window.addEventListener('online',()=>toast('Back online'));window.addEventListener('offline',()=>toast('Offline — network-dependent map data may be unavailable'));
+
+// Better nearby category coverage for the new tools.
+const oldNearby=nearby;
+async function nearby3(type){if(type==='parking'){if(!userLocation){locate();return}const q=`[out:json][timeout:20];(node[amenity=parking](around:5000,${userLocation.lat},${userLocation.lon});way[amenity=parking](around:5000,${userLocation.lat},${userLocation.lon}););out center tags;`;try{const r=await fetch('https://overpass-api.de/api/interpreter',{method:'POST',body:q});const d=await r.json();poiLayer.clearLayers();d.elements.slice(0,80).forEach(el=>{const lat=el.lat??el.center?.lat,lon=el.lon??el.center?.lon;if(!Number.isFinite(lat)||!Number.isFinite(lon))return;const name=el.tags?.name||'Parking';L.marker([lat,lon],{icon:L.divIcon({className:'poi-icon',html:'🅿️',iconSize:[28,28],iconAnchor:[14,14]})}).addTo(poiLayer).on('click',()=>selectPlace({name,display_name:name,lat,lon,type:'parking'},false));});toast(`${d.elements.length} parking locations found`)}catch{toast('Parking search failed')}}else if(type==='police'){if(!userLocation){locate();return}const q=`[out:json][timeout:20];node[amenity=police](around:5000,${userLocation.lat},${userLocation.lon});out tags;`;try{const r=await fetch('https://overpass-api.de/api/interpreter',{method:'POST',body:q});const d=await r.json();d.elements.slice(0,50).forEach(el=>{if(el.lat==null)return;L.marker([el.lat,el.lon],{icon:L.divIcon({className:'poi-icon',html:'🚓',iconSize:[28,28],iconAnchor:[14,14]})}).addTo(poiLayer)});toast(`${d.elements.length} police stations found`)}catch{toast('Police search failed')}}else return oldNearby(type)}
+nearby=nearby3;
